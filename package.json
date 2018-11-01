@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "selenium-webdriver": "^4.0.0-alpha.1",
-    "sendmail": "^1.4.1"
+    "sendmail": "^1.4.1",
+    "textbelt": "0.0.4"
   }
 }

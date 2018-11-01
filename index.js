@@ -20,10 +20,13 @@ headlessChromeCapabilities.set('chromeOptions', {args: ['--headless']});
 		if(isAppointmentAvailable) {
 			console.log('Sending email');
 			await sendEmail();
-			await sleep(3 * 60 * 60 * 1000);
+
+			//await sleep(3 * 60 * 60 * 1000); // 3 hours
+
+			await sleep(15 * 60 * 1000);
 		}
 
-		await sleep(5 * 60 * 1000);
+		await sleep(5 * 60 * 1000); // 5 minutes
 	}
 })();
 
@@ -35,10 +38,22 @@ async function checkIsAppointmentAvailable() {
 
 	await driver.get('https://my.uscis.gov/en/appointment/new?appointment%5Binternational%5D=false');
 
-	await driver.findElement(By.id('appointments_appointment_zip')).sendKeys('84604');
+	await driver.findElement(By.id('appointments_appointment_zip')).sendKeys('11201');
 	await driver.findElement(By.id('field_office_query')).click();
 	await driver.sleep(2 * 1000);
-	await driver.findElement(By.id('create-appointment')).click();
+
+	// OVERRIDING CODE HERE BECAUSE IT DOESNT WORK
+	// await driver.findElement(By.id('create-appointment')).click();
+
+	// Jack: click NYC button
+	await driver.findElement(By.id('NYC')).click();
+	// Jack: click create appointment button for NYC
+	await driver.findElement(By.xpath("//input[contains(@title, 'New York City')]")).click();
+
+	// hehe
+	console.log('Check');
+	console.log('Test Send');
+	sendEmail();
 
 	let text = await driver.findElement(By.className('appointment-time-slots')).getText();
 	console.log(`${new Date()}: ${text}`);
@@ -52,9 +67,10 @@ async function checkIsAppointmentAvailable() {
 async function sendEmail() {
 	return new Promise((resolve, reject) => {
 		sendmail({
-				from: 'appointmentchecker@sage.com',
-				to: '4108419434@text.att.net',
-				subject: 'InfoPass Appointment Available',
+				from: 'jchong2838@gmail.com',
+				//to: 'lyang0322@gmail.com, jchong2838@gmail.com',
+				to: 'jchong2838@gmail.com',
+				subject: 'Test InfoPass Appointment Available',
 				text: 'https://my.uscis.gov/en/appointment/new?appointment%5Binternational%5D=false'
 			}, function(err, reply) {
 				if(err) {
@@ -74,4 +90,3 @@ async function sendEmail() {
 function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
-
